@@ -637,15 +637,16 @@ A **scene** is an image designed for the whole screen layout.
 
 ## 9. Interface language (i18n)
 
-hyprdesk speaks French (source language) or English:
-`hd.config({ language = "auto" | "fr" | "en" })`, Settings → Desktop → Language, or
-`hyprdesk config set language en`. `auto` follows `LC_ALL`, `LC_MESSAGES` then `LANG`
-(French if the language is French, English otherwise). A chosen language also
-applies to dates; `auto` lets dates follow `LC_TIME`.
+hyprdesk speaks French (source language), English or Russian:
+`hd.config({ language = "auto" | "fr" | "en" | "ru" })`, Settings → Desktop → Language, or
+`hyprdesk config set language ru`. `auto` follows `LC_ALL`, `LC_MESSAGES` then `LANG`
+(French, Russian or English depending on the system language). A chosen language
+also applies to dates; `auto` lets dates follow `LC_TIME`.
 
 **The French text is the key** (gettext-style): the
-`locales/en.toml` catalog, built into the binary, maps each French text to its
-translation. A missing text is shown in French: nothing breaks.
+`locales/en.toml` and `locales/ru.toml` catalogs, built into the binary, map
+each French text to its translation. A missing text is shown in French:
+nothing breaks.
 
 - **Views (Rust)**: `text` comes from `crate::i18n` (not from iced) in views;
   it translates any text present in the catalog, literal or computed. Other
@@ -655,12 +656,14 @@ translation. A missing text is shown in French: nothing breaks.
   widgets) are translated at display time.
 - **Command line**: messages through `tr!`, help texts translated line by line
   (`i18n::tr_lines`, columns included).
-- **Lua plugins**: `hd.t("texte")` translates, `hd.lang()` returns `"fr"` or `"en"`
-  for a plugin that has its own texts.
+- **Lua plugins**: `hd.t("texte")` translates, `hd.lang()` returns `"fr"`, `"en"`
+  or `"ru"` for a plugin that has its own texts.
 - **Stay in French**: logs, generated files (`settings.lua`,
   `monitors.lua`), context passed to LYRA.
-- **Checks**: `i18n::tests::catalogue_complet` (texts marked in
-  `src/` and `assets/`), `registres_traduits` (packages, tabs, widgets),
-  `aide_traduite` and `aide_config_traduite`. To complete the catalog:
+- **Checks**: `i18n::tests::catalogue_complet` and
+  `catalogue_russe_complet` (texts marked in `src/` and `assets/`),
+  `registres_traduits` (packages, tabs, widgets), `aide_traduite` and
+  `aide_config_traduite`. To complete the catalog:
   `HYPRDESK_I18N_TODO=missing.toml HYPRDESK_I18N_TODO_DIR=<dir> cargo test i18n`
-  writes the missing entries, to be translated and then added to `locales/en.toml`.
+  writes the missing entries, to be translated and then added to
+  `locales/en.toml` and `locales/ru.toml`.

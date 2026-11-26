@@ -172,20 +172,25 @@ This is how the bundled `network` plugin asks for a Wi-Fi password:
 
 ## 6. Translations
 
-hyprdesk's interface is in French or English (`hd.config({ language = … })`).
+hyprdesk's interface is in French, English or Russian (`hd.config({ language = … })`).
 Two helpers let a plugin follow it:
 
-- `hd.lang()` returns `"fr"` or `"en"`. Use it to ship your own texts:
+- `hd.lang()` returns `"fr"`, `"en"` or `"ru"`. Use it to ship your own texts:
 
   ```lua
-  local T = { fr = { title = "Disque" }, en = { title = "Disk" } }
-  local t = T[hd.lang()]
+  local T = {
+    fr = { title = "Disque" },
+    en = { title = "Disk" },
+    ru = { title = "Диск" },
+  }
+  local t = T[hd.lang()] or T.en
   return { name = t.title, render = function(o) … end }
   ```
 
-- `hd.t(text)` looks a French text up in hyprdesk's own catalog
-  (`locales/en.toml`) and returns it unchanged if it is missing. The bundled
-  plugins use it. A third-party plugin should rely on `hd.lang()`.
+- `hd.t(text)` looks a French text up in hyprdesk's own catalogs
+  (`locales/en.toml`, `locales/ru.toml`) and returns it unchanged if it is
+  missing. The bundled plugins use it. A third-party plugin should rely on
+  `hd.lang()`.
 
 ## 7. A complete example
 
@@ -199,6 +204,8 @@ local T = {
            connect = "Connecter", disconnect = "Déconnecter…", sure = "Couper le tunnel ?" },
     en = { name = "WireGuard", up = "Tunnel up", down = "Tunnel down",
            connect = "Connect", disconnect = "Disconnect…", sure = "Bring the tunnel down?" },
+    ru = { name = "WireGuard", up = "Туннель активен", down = "Туннель отключён",
+           connect = "Подключить", disconnect = "Отключить…", sure = "Отключить туннель?" },
 }
 local t = T[hd.lang()]
 

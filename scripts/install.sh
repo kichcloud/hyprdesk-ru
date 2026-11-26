@@ -33,7 +33,7 @@
 # Désinstallation : ./scripts/uninstall.sh.
 #
 #   --defaults               choix par défaut, sans assistant
-#   --lang fr|en|auto        langue de hyprdesk et de ces messages (sans : la langue
+#   --lang fr|en|ru|auto     langue de hyprdesk et de ces messages (sans : la langue
 #                            de hyprdesk ne change pas, messages dans celle du système)
 #   --keyboard L[:V[:O]]     clavier de la session (inputs.lua), ex. fr:azerty
 #   --system-keyboard        le même clavier pour le système (localectl : GDM, TTY…)
@@ -98,7 +98,7 @@ ORIG_ARGS=("$@")
 while [ $# -gt 0 ]; do
     case "$1" in
         --defaults) ;;
-        --lang) LANG_CHOICE="${2:?--lang fr|en|auto}"; shift ;;
+        --lang) LANG_CHOICE="${2:?--lang fr|en|ru|auto}"; shift ;;
         --keyboard) KEYBOARD="${2:?--keyboard disposition[:variante[:options]]}"; shift ;;
         --system-keyboard) SYSTEM_KEYBOARD=1 ;;
         --no-deps) export HYPRDESK_NO_DEPS=1 ;;
@@ -122,7 +122,7 @@ while [ $# -gt 0 ]; do
     esac
     shift
 done
-case "$LANG_CHOICE" in ""|fr|en|auto) ;; *) echo "--lang : fr, en ou auto" >&2; exit 2 ;; esac
+case "$LANG_CHOICE" in ""|fr|en|ru|auto) ;; *) echo "--lang : fr, en, ru ou auto" >&2; exit 2 ;; esac
 # Sans option, au terminal : l'assistant pose les questions, puis relance
 # ce script avec les options choisies (scripts/wizard.sh, qui ne revient pas).
 if [[ "$ARGC" == 0 ]] && [[ -t 0 && -t 1 ]] && [[ "${HYPRDESK_WIZARD:-1}" != 0 ]]; then
@@ -955,6 +955,7 @@ if [[ "$GREETER" == yes ]]; then
     case "$LANG_CHOICE" in
         fr) locale -a 2>/dev/null | grep -qi '^fr_FR\.utf-\?8$' && GREETER_LANG=fr_FR.UTF-8 ;;
         en) locale -a 2>/dev/null | grep -qi '^en_US\.utf-\?8$' && GREETER_LANG=en_US.UTF-8 ;;
+        ru) locale -a 2>/dev/null | grep -qi '^ru_RU\.utf-\?8$' && GREETER_LANG=ru_RU.UTF-8 ;;
     esac
     PROFILE="$(mktemp --suffix=.json)"
     LANG="$GREETER_LANG" "$BIN" greeter setup profile "$PROFILE" >>"$HD_LOG" 2>&1

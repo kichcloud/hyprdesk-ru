@@ -647,7 +647,7 @@ impl App {
                     ClientMsg::Hello {
                         client: "hyprdesk".into(),
                         protocol: crate::chat::PROTOCOL,
-                        language: crate::i18n::code().into(),
+                        language: crate::assistant::lyra_language().into(),
                     },
                 );
                 return Task::none();

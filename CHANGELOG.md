@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- **Russian interface**: `hd.config({ language = "ru" })`, Settings → Desktop →
+  Language, or `hyprdesk config set language ru`, plus `--lang ru` for the
+  installer. The new `locales/ru.toml` catalog covers every interface string,
+  and the `catalogue_russe_complet` test keeps it complete.
+
 ## [0.2.1] - 2026-11-25
 
 Menus after Apple's guidelines, a bar laid out like the macOS menu bar,

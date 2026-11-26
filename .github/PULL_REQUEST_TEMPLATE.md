@@ -12,6 +12,7 @@ visible interface moves.
 - [ ] Tests added or updated to cover the change
 - [ ] Documentation updated (README, `docs/`) if the visible behaviour
       changed
-- [ ] `locales/en.toml` completed if new user-facing strings were added —
+- [ ] `locales/en.toml` and `locales/ru.toml` completed if new user-facing
+      strings were added —
       `HYPRDESK_I18N_TODO=/tmp/todo.toml cargo test --locked catalogue_complet`
       lists the missing entries

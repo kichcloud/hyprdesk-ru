@@ -479,12 +479,12 @@ pub static KEYS: &[Key] = keys![
         |c| c.general.font.clone().unwrap_or_default(),
         |s, v, c| { s.font = Some(v.to_string()); Ok(()) },
         |s| s.font = None;
-    "language", "desktop", "auto | fr | en — langue de l'interface (auto : celle du système)",
+    "language", "desktop", "auto | fr | en | ru — langue de l'interface (auto : celle du système)",
         |c| c.general.language.clone(),
         |s, v, c| {
             let l = v.trim().to_lowercase();
-            if !["auto", "fr", "en"].contains(&l.as_str()) {
-                return Err(crate::tr!("« {v} » : auto, fr ou en", v = v));
+            if !["auto", "fr", "en", "ru"].contains(&l.as_str()) {
+                return Err(crate::tr!("« {v} » : auto, fr, en ou ru", v = v));
             }
             s.language = Some(l);
             Ok(())

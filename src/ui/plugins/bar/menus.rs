@@ -96,7 +96,7 @@ pub(in crate::ui) fn help_entries() -> Vec<MenuEntry> {
 /// à défaut.
 fn guide_in(dir: &Path, lang: crate::i18n::Lang) -> Option<std::path::PathBuf> {
     let names = match lang {
-        crate::i18n::Lang::En => ["GUIDE.md", "GUIDE.fr.md"],
+        crate::i18n::Lang::En | crate::i18n::Lang::Ru => ["GUIDE.md", "GUIDE.fr.md"],
         crate::i18n::Lang::Fr => ["GUIDE.fr.md", "GUIDE.md"],
     };
     names.iter().map(|n| dir.join(n)).find(|p| p.is_file())

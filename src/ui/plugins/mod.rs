@@ -397,10 +397,12 @@ pub fn find_tab(pkg: &str, name: &str) -> Option<&'static str> {
     tabs(pkg)
         .iter()
         .find(|(id, label)| {
-            // Identifiant, libellé français ou anglais (`bureau/raccourcis`, `desktop/shortcuts`).
+            // Identifiant, libellé français, anglais ou russe
+            // (`bureau/raccourcis`, `desktop/shortcuts`).
             fold(id) == want
                 || fold(label) == want
                 || fold(crate::i18n::tr_in(crate::i18n::Lang::En, label)) == want
+                || fold(crate::i18n::tr_in(crate::i18n::Lang::Ru, label)) == want
         })
         .map(|(id, _)| *id)
 }

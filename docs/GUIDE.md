@@ -72,7 +72,7 @@ The installer can install missing build dependencies and use rustup in
 | Option | What it controls |
 | --- | --- |
 | `--defaults` | Use the default choices without the setup assistant |
-| `--lang fr\|en\|auto` | Choose the interface and installer language |
+| `--lang fr\|en\|ru\|auto` | Choose the interface and installer language |
 | `--keyboard fr:azerty` | Set the session keyboard using `layout[:variant[:options]]` |
 | `--system-keyboard` | Apply the same layout system-wide |
 | `--greeter` / `--no-greeter` | Replace your display manager with the greetd login screen, which uses cage (off unless asked) |

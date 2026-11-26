@@ -89,7 +89,7 @@ pub enum Msg {
     /// Oublier les places de fenêtres choisies.
     ForgetWindowPlaces,
     WindowPlacesForgotten(Result<(), String>),
-    /// Langue de l'interface : `auto`, `fr`, `en`.
+    /// Langue de l'interface : `auto`, `fr`, `en`, `ru`.
     Language(&'static str),
     ShowOn(ShowOn),
     Mode(Mode),
@@ -169,6 +169,7 @@ impl App {
         let lang: &'static str = match g.language.as_str() {
             "fr" => "fr",
             "en" => "en",
+            "ru" => "ru",
             _ => "auto",
         };
         column![
@@ -192,8 +193,13 @@ impl App {
                         Msg::Language(v)
                     ))
                     .font(self.font)),
+                    self.focusable(radio("Русский", "ru", Some(lang), |v| wrap(
+                        Msg::Language(v)
+                    ))
+                    .font(self.font)),
                 ]
-                .spacing(16),
+                .spacing(16)
+                .wrap(),
             ),
             self.section("Affichage"),
             self.field(

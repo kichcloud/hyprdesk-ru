@@ -55,18 +55,21 @@ The CI runs `bash scripts/verify.sh` on every push and pull request.
 ## Translations
 
 French is the source language and the key at the same time, as in gettext:
-`tr("Afficher la barre")` displays “Show bar” in English, and the French
-text itself otherwise. The English catalog lives in
-[locales/en.toml](locales/en.toml) and is embedded in the binary: there is
-no runtime translation file.
+`tr("Afficher la barre")` displays “Show bar” in English, « Показать панель »
+in Russian, and the French text itself otherwise. The catalogs live in
+[locales/en.toml](locales/en.toml) and [locales/ru.toml](locales/ru.toml) and
+are embedded in the binary: there is no runtime translation file.
 
 - The `catalogue_complet` test in [src/i18n.rs](src/i18n.rs) **fails when a
-  marked string has no English entry**. Strings are collected from Rust and
-  Lua sources, so a new label breaks the build until it is translated.
+  marked string has no English entry**, and `catalogue_russe_complet` fails
+  when the Russian catalog misses an entry or changes a `{placeholder}`.
+  Strings are collected from Rust and Lua sources, so a new label breaks the
+  build until it is translated.
 - To get the missing entries as a starting point:
   `HYPRDESK_I18N_TODO=/tmp/todo.toml cargo test --locked catalogue_complet`
   writes every missing key with an empty value (the test still fails).
-  Translate the values and append them to `locales/en.toml`.
+  Translate the values and append them to `locales/en.toml` and
+  `locales/ru.toml`.
 - Help lines, generated Lua comments and the bundled examples have their own
   tests in the same file; they fail on untranslated text too.
 

@@ -1158,13 +1158,15 @@ impl App {
         let lang = match self.cfg.general.language.as_str() {
             "fr" => "fr",
             "en" => "en",
+            "ru" => "ru",
             _ => "auto",
         };
         let detected = match crate::i18n::from_env() {
             crate::i18n::Lang::Fr => "Français",
             crate::i18n::Lang::En => "English",
+            crate::i18n::Lang::Ru => "Русский",
         };
-        let tw = self.wizard_tile(3);
+        let tw = self.wizard_tile(4);
         let card = |code: &'static str, glyph: &'static str, name: String, sub: String| {
             let mark: Element<'_, Msg> = container(
                 text(glyph)
@@ -1254,6 +1256,12 @@ impl App {
                     "En",
                     "English".into(),
                     crate::i18n::tr("Interface en anglais").into()
+                ),
+                card(
+                    "ru",
+                    "Ру",
+                    "Русский".into(),
+                    crate::i18n::tr("Interface en russe").into()
                 ),
                 card(
                     "auto",
@@ -2540,6 +2548,7 @@ impl App {
             WELCOME => match g.language.as_str() {
                 "fr" => "Français".into(),
                 "en" => "English".into(),
+                "ru" => "Русский".into(),
                 _ => tr("Celle du système").into(),
             },
             SCREENS => match &g.primary {

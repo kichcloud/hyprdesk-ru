@@ -656,15 +656,16 @@ Une **scène** est une image pensée pour toute la disposition des écrans.
 
 ## 9. Langue de l'interface (i18n)
 
-hyprdesk parle français (langue source) ou anglais :
-`hd.config({ language = "auto" | "fr" | "en" })`, Réglages → Bureau → Langue, ou
-`hyprdesk config set language en`. `auto` suit `LC_ALL`, `LC_MESSAGES` puis `LANG`
-(français si la langue est le français, anglais sinon). Une langue choisie vaut
+hyprdesk parle français (langue source), anglais ou russe :
+`hd.config({ language = "auto" | "fr" | "en" | "ru" })`, Réglages → Bureau → Langue, ou
+`hyprdesk config set language ru`. `auto` suit `LC_ALL`, `LC_MESSAGES` puis `LANG`
+(français, russe ou anglais selon la langue du système). Une langue choisie vaut
 aussi pour les dates ; `auto` laisse les dates suivre `LC_TIME`.
 
-**Le texte français est la clé** (à la manière de gettext) : le catalogue
-`locales/en.toml`, intégré au binaire, associe chaque texte français à sa
-traduction. Un texte absent s'affiche en français : rien ne casse.
+**Le texte français est la clé** (à la manière de gettext) : les catalogues
+`locales/en.toml` et `locales/ru.toml`, intégrés au binaire, associent chaque
+texte français à sa traduction. Un texte absent s'affiche en français : rien ne
+casse.
 
 - **Vues (Rust)** : `text` vient de `crate::i18n` (et non d'iced) dans les vues ;
   il traduit tout texte présent au catalogue, littéral ou calculé. Les autres
@@ -674,11 +675,12 @@ traduction. Un texte absent s'affiche en français : rien ne casse.
   intégrés) sont traduites à l'affichage.
 - **Ligne de commande** : messages en `tr!`, aides traduites ligne à ligne
   (`i18n::tr_lines`, colonnes comprises).
-- **Plugins Lua** : `hd.t("texte")` traduit, `hd.lang()` rend `"fr"` ou `"en"`
-  pour un plugin qui a ses propres textes.
+- **Plugins Lua** : `hd.t("texte")` traduit, `hd.lang()` rend `"fr"`, `"en"` ou
+  `"ru"` pour un plugin qui a ses propres textes.
 - **Restent en français** : journaux, fichiers générés (`settings.lua`,
   `monitors.lua`), contexte transmis à LYRA.
-- **Vérification** : `i18n::tests::catalogue_complet` (textes marqués dans
+- **Vérification** : `i18n::tests::catalogue_complet` et
+  `catalogue_russe_complet` (textes marqués dans
   `src/` et `assets/`), `registres_traduits` (paquets, onglets, widgets),
   `aide_traduite` et `aide_config_traduite`. Pour compléter le catalogue :
   `HYPRDESK_I18N_TODO=manque.toml HYPRDESK_I18N_TODO_DIR=dossier cargo test i18n`

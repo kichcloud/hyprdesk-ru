@@ -449,6 +449,7 @@ pub fn with_inputs_block(current: &str, block: &str) -> String {
             [
                 m.to_string(),
                 crate::i18n::tr_in(crate::i18n::Lang::En, m).to_string(),
+                crate::i18n::tr_in(crate::i18n::Lang::Ru, m).to_string(),
             ]
         })
         .collect();

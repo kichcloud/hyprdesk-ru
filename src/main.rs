@@ -14,7 +14,7 @@ const STUBS_EN: &str = include_str!("../assets/hyprdesk.meta.en.lua");
 fn stubs() -> &'static str {
     match i18n::current() {
         i18n::Lang::Fr => STUBS,
-        i18n::Lang::En => STUBS_EN,
+        i18n::Lang::En | i18n::Lang::Ru => STUBS_EN,
     }
 }
 

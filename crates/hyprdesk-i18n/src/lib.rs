@@ -1,16 +1,17 @@
 //! hyprdesk-i18n : langue de l'interface de hyprdesk, français (langue
-//! source) ou anglais. Crate à part, sans iced ni Lua : l'écran de
+//! source), anglais ou russe. Crate à part, sans iced ni Lua : l'écran de
 //! verrouillage, l'écran de connexion et l'agent polkit s'en servent aussi.
 //!
 //! À la manière de gettext, le texte français sert de clé : `tr("Afficher la
-//! barre")` rend « Show bar » en anglais, et le texte tel quel en français ou
-//! s'il manque au catalogue (`locales/en.toml`, intégré au binaire). Un texte
-//! à trous s'écrit `tr!("Workspace {ws}", ws = n)`.
+//! barre")` rend « Show bar » en anglais, « Показать панель » en russe, et le
+//! texte tel quel en français ou s'il manque au catalogue (`locales/en.toml`,
+//! `locales/ru.toml`, intégrés au binaire). Un texte à trous s'écrit
+//! `tr!("Workspace {ws}", ws = n)`.
 //!
-//! Choix de la langue : `hd.config({ language = "auto" | "fr" | "en" })`.
-//! `auto` suit `LC_ALL`, `LC_MESSAGES` puis `LANG` : français si la langue est
-//! le français, anglais sinon. Le test `catalogue_complet` vérifie que chaque
-//! texte marqué dans le code a sa traduction.
+//! Choix de la langue : `hd.config({ language = "auto" | "fr" | "en" | "ru" })`.
+//! `auto` suit `LC_ALL`, `LC_MESSAGES` puis `LANG` : la langue correspondante
+//! si elle est prise en charge, anglais sinon. Le test `catalogue_complet`
+//! vérifie que chaque texte marqué dans le code a sa traduction.
 
 use std::collections::HashMap;
 use std::sync::OnceLock;
@@ -21,6 +22,7 @@ use std::sync::atomic::{AtomicU8, Ordering};
 pub enum Lang {
     Fr,
     En,
+    Ru,
 }
 
 static CURRENT: AtomicU8 = AtomicU8::new(0);
@@ -38,9 +40,30 @@ pub fn catalog() -> &'static HashMap<String, String> {
     })
 }
 
+/// Catalogue russe : texte français → texte russe.
+pub fn catalog_ru() -> &'static HashMap<String, String> {
+    static CATALOG: OnceLock<HashMap<String, String>> = OnceLock::new();
+    CATALOG.get_or_init(|| {
+        toml::from_str(include_str!("../../../locales/ru.toml")).unwrap_or_else(|e| {
+            tracing::warn!("catalogue russe illisible : {e}");
+            HashMap::new()
+        })
+    })
+}
+
+/// Catalogue d'une langue (le français n'en a pas : il est la clé).
+pub fn catalog_for(lang: Lang) -> Option<&'static HashMap<String, String>> {
+    match lang {
+        Lang::Fr => None,
+        Lang::En => Some(catalog()),
+        Lang::Ru => Some(catalog_ru()),
+    }
+}
+
 pub fn current() -> Lang {
     match CURRENT.load(Ordering::Relaxed) {
         1 => Lang::En,
+        2 => Lang::Ru,
         _ => Lang::Fr,
     }
 }
@@ -50,12 +73,13 @@ pub fn set(lang: Lang) {
         match lang {
             Lang::Fr => 0,
             Lang::En => 1,
+            Lang::Ru => 2,
         },
         Ordering::Relaxed,
     );
 }
 
-/// Langue de l'environnement : français s'il le demande, anglais sinon.
+/// Langue de l'environnement : celle qui est prise en charge, anglais sinon.
 pub fn from_env() -> Lang {
     let v = ["LC_ALL", "LC_MESSAGES", "LANG"]
         .iter()
@@ -64,16 +88,19 @@ pub fn from_env() -> Lang {
         .unwrap_or_default();
     if v.starts_with("fr") {
         Lang::Fr
+    } else if v.starts_with("ru") {
+        Lang::Ru
     } else {
         Lang::En
     }
 }
 
-/// Réglage `language` (`auto`, `fr`, `en`) → langue.
+/// Réglage `language` (`auto`, `fr`, `en`, `ru`) → langue.
 pub fn resolve(setting: &str) -> Lang {
     match setting.trim().to_lowercase().as_str() {
         "fr" | "français" | "francais" | "french" => Lang::Fr,
         "en" | "english" | "anglais" => Lang::En,
+        "ru" | "russian" | "русский" | "russkiy" => Lang::Ru,
         _ => from_env(),
     }
 }
@@ -97,11 +124,12 @@ pub fn tr_lines(s: &str) -> String {
     s.lines().map(tr).collect::<Vec<_>>().join("\n")
 }
 
-/// Langue annoncée aux programmes tiers (LYRA) : `fr` ou `en`.
+/// Langue annoncée aux programmes tiers (LYRA) : `fr`, `en` ou `ru`.
 pub fn code() -> &'static str {
     match current() {
         Lang::Fr => "fr",
         Lang::En => "en",
+        Lang::Ru => "ru",
     }
 }
 
@@ -172,9 +200,9 @@ pub fn tr(s: &str) -> &str {
 
 /// Texte dans une langue donnée.
 pub fn tr_in(lang: Lang, s: &str) -> &str {
-    match lang {
-        Lang::Fr => s,
-        Lang::En => catalog().get(s).map(String::as_str).unwrap_or(s),
+    match catalog_for(lang) {
+        Some(c) => c.get(s).map(String::as_str).unwrap_or(s),
+        None => s,
     }
 }
 
@@ -194,6 +222,7 @@ pub fn chrono_locale() -> chrono::Locale {
         return match current() {
             Lang::Fr => chrono::Locale::fr_FR,
             Lang::En => chrono::Locale::en_US,
+            Lang::Ru => chrono::Locale::ru_RU,
         };
     }
     let lang = std::env::var("LC_TIME")

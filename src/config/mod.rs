@@ -89,7 +89,7 @@ pub fn forget_key_answers(path: &Path) {
 pub fn example() -> &'static str {
     match crate::i18n::current() {
         crate::i18n::Lang::Fr => EXAMPLE,
-        crate::i18n::Lang::En => EXAMPLE_EN,
+        crate::i18n::Lang::En | crate::i18n::Lang::Ru => EXAMPLE_EN,
     }
 }
 

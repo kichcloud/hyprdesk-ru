@@ -3307,6 +3307,7 @@ impl Preview {
             let gib = match crate::i18n::current() {
                 crate::i18n::Lang::Fr => "Gio",
                 crate::i18n::Lang::En => "GiB",
+                crate::i18n::Lang::Ru => "ГиБ",
             };
             self.app.panorama.sys = [
                 ("CPU".to_string(), "12 %".to_string(), Some(0.12)),

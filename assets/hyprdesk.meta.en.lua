@@ -76,7 +76,7 @@
 ---@field font_size? number
 ---@field advanced_settings? boolean Settings screen: all the details (otherwise the essentials)
 ---@field tour_seen? boolean Guided tour done or dismissed (no longer offered)
----@field language? "auto"|"fr"|"en" Interface language (auto: the system's)
+---@field language? "auto"|"fr"|"en"|"ru" Interface language (auto: the system's)
 ---@field renderer? "hardware"|"software" Interface rendering engine: graphics card (wgpu, software fallback) or processor (tiny-skia); applied on restart
 ---@field gpu? "hyprland"|"low"|"high" Graphics card for hyprdesk: Hyprland’s (default, no copy), power-saving (integrated) or powerful (discrete); applied on restart
 ---@field hyprland_gpu? string Hyprland’s render card by PCI address ("0000:01:00.0", lspci); set in env.lua (AQ_DRM_DEVICES), on the next Hyprland start
@@ -366,11 +366,12 @@ function hd.index_status() end
 function hd.notifications() end
 
 --- Text in the interface language: the French text is the key in
---- hyprdesk's catalog (locales/en.toml); if missing, it is returned as is.
+--- hyprdesk's catalog (locales/en.toml, locales/ru.toml); if missing, it is
+--- returned as is.
 ---@param text string
 ---@return string
 function hd.t(text) end
 
---- Interface language: "fr" or "en" (for plugins that ship their own texts).
----@return "fr"|"en"
+--- Interface language: "fr", "en" or "ru" (for plugins that ship their own texts).
+---@return "fr"|"en"|"ru"
 function hd.lang() end

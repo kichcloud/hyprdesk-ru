@@ -103,9 +103,19 @@ pub fn supports_provider() -> bool {
     lyra_help().contains("--provider")
 }
 
-/// LYRA accepte `--language <fr|en>` (langue de la conversation).
+/// LYRA accepte `--language` (langue de la conversation).
 pub fn supports_language() -> bool {
     lyra_help().contains("--language")
+}
+
+/// Langue à annoncer à LYRA : `fr` ou `en`. Son catalogue ne connaît pas
+/// encore le russe et retomberait sur le français ; on lui parle donc anglais,
+/// et le contexte lui demande de répondre en russe.
+pub fn lyra_language() -> &'static str {
+    match crate::i18n::current() {
+        crate::i18n::Lang::Ru => "en",
+        _ => crate::i18n::code(),
+    }
 }
 
 /// LYRA lit les contextes de `~/.config/hyprpanel/context.d/`.
@@ -174,7 +184,7 @@ pub fn command(cfg: &Config) -> Option<String> {
         .unwrap_or_default();
     // LYRA parle la langue de l'utilisateur (celle de hyprdesk), si elle sait la recevoir.
     if supports_language() {
-        prov += &format!(" --language {}", crate::i18n::code());
+        prov += &format!(" --language {}", lyra_language());
     }
     Some(match cfg.general.assistant_mode {
         AssistantMode::Window => format!("{bin}{prov}"),
@@ -197,10 +207,11 @@ pub fn context(cfg: &Config, config_path: &std::path::Path) -> String {
     let mut o = String::new();
     o += crate::i18n::tr("# hyprdesk — environnement du bureau\n\n");
     o += &crate::tr!(
-        "Langue de l'utilisateur : {lang} (celle de l'interface de hyprdesk).\n\n",
+        "Langue de l'utilisateur : {lang} (celle de l'interface de hyprdesk). Réponds dans cette langue.\n\n",
         lang = match crate::i18n::current() {
             crate::i18n::Lang::Fr => "français",
             crate::i18n::Lang::En => "English",
+            crate::i18n::Lang::Ru => "русский",
         }
     );
     o += &crate::tr!(

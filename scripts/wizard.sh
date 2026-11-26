@@ -174,11 +174,12 @@ if [[ "$TUI" == 0 ]]; then
              "5 questions, then the install. Nothing is changed before you confirm.")"
 fi
 wiz "Langue" "Language"
-LANG_CHOICE="$(menu "Langue / Language" "$UI" \
+LANG_CHOICE="$(menu "Langue / Language / Язык" "$UI" \
     fr "Français" \
     en "English" \
+    ru "Русский" \
     auto "Langue du système / System language")" || quit
-case "$LANG_CHOICE" in fr) UI=fr ;; en) UI=en ;; esac
+case "$LANG_CHOICE" in fr) UI=fr ;; en|ru) UI=en ;; esac
 WIZ_NAME="$(t "Langue" "Language")"
 
 # -- 2. Contrôles préalables : rien ne va plus loin si un critère de base manque ------
@@ -280,6 +281,7 @@ add_kb fr:bepo "Français (BÉPO)"
 add_kb be "Belge (AZERTY)"
 add_kb ch:fr "Suisse romand"
 add_kb ca:fr "Canadien français"
+add_kb ru "Русский (ЙЦУКЕН)"
 add_kb us "English (US, QWERTY)"
 add_kb us:intl "English (US, international)"
 add_kb gb "English (UK)"

@@ -11,12 +11,14 @@ use crate::config::{SysItem, WidgetFamily};
 static SYS: LazyLock<Option<Mutex<System>>> = LazyLock::new(|| System::new().ok().map(Mutex::new));
 
 fn human_bytes(b: u64) -> String {
-    // Unités binaires : octets en français, bytes en anglais.
+    // Unités binaires : octets en français, bytes en anglais, КиБ en russe.
     const FR: [&str; 5] = ["o", "Kio", "Mio", "Gio", "Tio"];
     const EN: [&str; 5] = ["B", "KiB", "MiB", "GiB", "TiB"];
+    const RU: [&str; 5] = ["Б", "КиБ", "МиБ", "ГиБ", "ТиБ"];
     let units = match crate::i18n::current() {
         crate::i18n::Lang::Fr => FR,
         crate::i18n::Lang::En => EN,
+        crate::i18n::Lang::Ru => RU,
     };
     let mut v = b as f64;
     let mut i = 0;

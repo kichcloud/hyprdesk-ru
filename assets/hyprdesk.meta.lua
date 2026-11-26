@@ -76,7 +76,7 @@
 ---@field font_size? number
 ---@field advanced_settings? boolean Écran Réglages : tous les détails (sinon l'essentiel)
 ---@field tour_seen? boolean Visite guidée faite ou écartée (plus proposée)
----@field language? "auto"|"fr"|"en" Langue de l'interface (auto : celle du système)
+---@field language? "auto"|"fr"|"en"|"ru" Langue de l'interface (auto : celle du système)
 ---@field renderer? "hardware"|"software" Moteur de rendu de l'interface : carte graphique (wgpu, repli logiciel) ou processeur (tiny-skia) ; pris en compte à la relance
 ---@field gpu? "hyprland"|"low"|"high" Carte graphique de hyprdesk : celle de Hyprland (défaut, sans recopie), économe (intégrée) ou puissante (dédiée) ; à la relance
 ---@field hyprland_gpu? string Carte de rendu de Hyprland par son adresse PCI ("0000:01:00.0", lspci) ; posée dans env.lua (AQ_DRM_DEVICES), au prochain démarrage de Hyprland
@@ -366,11 +366,12 @@ function hd.index_status() end
 function hd.notifications() end
 
 --- Texte dans la langue de l'interface : le français sert de clé dans le
---- catalogue de hyprdesk (locales/en.toml) ; absent, il est rendu tel quel.
+--- catalogue de hyprdesk (locales/en.toml, locales/ru.toml) ; absent, il est
+--- rendu tel quel.
 ---@param text string
 ---@return string
 function hd.t(text) end
 
---- Langue de l'interface : "fr" ou "en" (pour les plugins qui ont leurs textes).
----@return "fr"|"en"
+--- Langue de l'interface : "fr", "en" ou "ru" (pour les plugins qui ont leurs textes).
+---@return "fr"|"en"|"ru"
 function hd.lang() end

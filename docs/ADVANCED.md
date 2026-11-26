@@ -493,7 +493,7 @@ name, a number, a list, or `"*"`.
 | Session | `autostart`, `clipboard_history`, `index_paths` (roots of the `:f` file index; default: home and mounted volumes), `index_exclude` (folder names skipped, on top of the defaults), `index_interval` (safety rescan, seconds), `index_autostart` (index daemon started with hyprdesk; `false`: on the first `:f`), `idle_manage`, `idle_dim`, `idle_lock`, `idle_dpms`, `idle_suspend`, `idle_wake_volume` (screens turned off by `hyprdesk screens-off` come back on when the volume changes), `lock_fingerprint`, `update_commands` |
 | Screens | `screen_zones` (screens split into zones), `screen_colors` (brightness, contrast, gamma and channels of each screen), `panorama` (strip screens and their pages: see [`PANORAMA.md`](PANORAMA.md), in French) |
 | Plugins | `plugin_options = { [plugin] = { option = value } }`: defaults for every instance |
-| Interface | `language` (`"auto"`/`"fr"`/`"en"`), `advanced_settings`, `tour_seen` |
+| Interface | `language` (`"auto"`/`"fr"`/`"en"`/`"ru"`), `advanced_settings`, `tour_seen` |
 
 ### Rules
 
@@ -635,7 +635,7 @@ confirmations and memory.
 | Variable | Effect |
 |---|---|
 | `HYPRDESK_CONFIG` | path of the main config file |
-| `HYPRDESK_LANG` | interface language for CLI commands (`fr`, `en`) |
+| `HYPRDESK_LANG` | interface language for CLI commands (`fr`, `en`, `ru`) |
 | `HYPRDESK_LOG` | `tracing` filter, e.g. `warn,hyprdesk::ui=trace` |
 | `HYPRDESK_CHAT_ENGINE` | assistant engine command (development) |
 | `HYPRDESK_PREVIEW_SCENES`, `_SCALE`, `_WIDTH`, `_HEIGHT` | preview: scenes to capture, HiDPI scale, size |
@@ -688,8 +688,9 @@ bash scripts/package.sh             # .deb, .rpm and Arch packages (nfpm), built
   (see each `vendor/*/HYPRDESK.md`); `scripts/verifier-vendor.sh` checks
   them against the published archives.
 - Interface strings: French is the source language and serves as the key, as
-  in gettext, and `locales/en.toml` holds the English catalog. The
-  `catalogue_complet` test fails if any marked string has no translation.
+  in gettext; `locales/en.toml` and `locales/ru.toml` hold the English and
+  Russian catalogs. The `catalogue_complet` and `catalogue_russe_complet`
+  tests fail if any marked string has no translation.
 - Visual language and motion rules: [`DESIGN.md`](../DESIGN.md) (in French).
   The default interface font is
   [Mindlog](https://github.com/jacquesh82/mindlog.fonts), embedded in the

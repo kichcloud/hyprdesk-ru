@@ -1267,9 +1267,9 @@ fn hd_config(b: &mut Builder, t: &Table) -> mlua::Result<()> {
     }
     if let Some(s) = opt_string(t, "language", CTX)? {
         let l = s.trim().to_lowercase();
-        if !["auto", "fr", "en"].contains(&l.as_str()) {
+        if !["auto", "fr", "en", "ru"].contains(&l.as_str()) {
             return Err(err(crate::tr!(
-                "{CTX} : language « {s} » inconnue (auto, fr, en)",
+                "{CTX} : language « {s} » inconnue (auto, fr, en, ru)",
                 CTX = CTX,
                 s = s
             )));

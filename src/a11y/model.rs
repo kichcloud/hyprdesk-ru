@@ -455,6 +455,7 @@ pub fn locale_of(lang: crate::i18n::Lang) -> &'static str {
     match lang {
         crate::i18n::Lang::Fr => "fr_FR",
         crate::i18n::Lang::En => "en_US",
+        crate::i18n::Lang::Ru => "ru_RU",
     }
 }
 

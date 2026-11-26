@@ -1,11 +1,11 @@
-//! Langue de l'interface : le cœur est le crate `hyprdesk-i18n` (catalogue,
+//! Langue de l'interface : le cœur est le crate `hyprdesk-i18n` (catalogues,
 //! `tr`, `tr!`, choix de la langue), partagé avec les binaires dédiés. Ici :
 //! le widget texte traduit d'iced, et les tests qui vérifient que chaque texte
-//! marqué dans le code de hyprdesk a sa traduction.
+//! marqué dans le code de hyprdesk a sa traduction anglaise et russe.
 
 pub use hyprdesk_i18n::{
-    Lang, apply, catalog, chrono_locale, code, current, early_setting, fill, from_env, init_cli,
-    resolve, set, setting_line, tr, tr_in, tr_lines,
+    Lang, apply, catalog, catalog_for, catalog_ru, chrono_locale, code, current, early_setting,
+    fill, from_env, init_cli, resolve, set, setting_line, tr, tr_in, tr_lines,
 };
 
 /// Widget texte d'iced, traduit : remplace `iced::widget::text` dans
@@ -21,12 +21,9 @@ where
     use std::borrow::Cow;
     let f = match s.into_fragment() {
         Cow::Borrowed(b) => Cow::Borrowed(tr(b)),
-        Cow::Owned(o) => match current() {
-            Lang::Fr => Cow::Owned(o),
-            Lang::En => match catalog().get(&o) {
-                Some(t) => Cow::Borrowed(t.as_str()),
-                None => Cow::Owned(o),
-            },
+        Cow::Owned(o) => match catalog_for(current()).and_then(|c| c.get(&o)) {
+            Some(t) => Cow::Borrowed(t.as_str()),
+            None => Cow::Owned(o),
         },
     };
     iced::widget::text(f)
@@ -213,6 +210,54 @@ mod tests {
         );
     }
 
+    /// Trous `{nom}` d'un texte, triés. Les accolades d'exemple (`{ name, url }`)
+    /// ne sont pas des trous : seuls les noms identifiants comptent.
+    fn holes(s: &str) -> Vec<String> {
+        let mut out = Vec::new();
+        let mut rest = s;
+        while let Some(i) = rest.find('{') {
+            let Some(j) = rest[i..].find('}') else { break };
+            let inner = &rest[i + 1..i + j];
+            let mut chars = inner.chars();
+            let ident = matches!(chars.next(), Some(c) if c.is_ascii_alphabetic() || c == '_')
+                && chars.all(|c| c.is_ascii_alphanumeric() || c == '_');
+            if ident {
+                out.push(format!("{{{inner}}}"));
+            }
+            rest = &rest[i + j + 1..];
+        }
+        out.sort();
+        out
+    }
+
+    /// Le catalogue russe couvre les mêmes textes que l'anglais, avec les mêmes
+    /// trous (sinon `fill` laisserait un `{nom}` en clair).
+    #[test]
+    fn catalogue_russe_complet() {
+        let en = english();
+        let ru = super::catalog_ru();
+        assert!(!ru.is_empty(), "catalogue russe vide ou illisible");
+        let mut missing: Vec<&str> = en
+            .keys()
+            .filter(|k| !ru.contains_key(*k))
+            .map(String::as_str)
+            .collect();
+        missing.sort();
+        assert!(
+            missing.is_empty(),
+            "{} texte(s) sans traduction russe :\n{}",
+            missing.len(),
+            missing.join("\n")
+        );
+        let mut bad: Vec<String> = ru
+            .iter()
+            .filter(|(k, v)| holes(k) != holes(v))
+            .map(|(k, v)| format!("{k:?} : {v:?}"))
+            .collect();
+        bad.sort();
+        assert!(bad.is_empty(), "trous différents :\n{}", bad.join("\n"));
+    }
+
     /// Aide de la ligne de commande : chaque ligne a sa traduction.
     #[test]
     fn aide_traduite() {
@@ -292,6 +337,8 @@ mod tests {
         );
         assert_eq!(resolve("en"), Lang::En);
         assert_eq!(resolve("FR"), Lang::Fr);
+        assert_eq!(resolve("ru"), Lang::Ru);
+        assert_eq!(resolve("Русский"), Lang::Ru);
         assert_eq!(
             language_line("hd.config({\n  language = \"en\", -- anglais\n})"),
             Some("en".into())
