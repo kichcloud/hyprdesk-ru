@@ -22,7 +22,16 @@ git rev-parse --git-dir >/dev/null 2>&1 || {
     exit 1
 }
 
-UPSTREAM="${HYPRDESK_UPSTREAM:-origin/main}"
+# В клоне приватного репозитория origin/main — это ветка с комплектом, а не
+# upstream. Если добавлен remote upstream, берём upstream/main, иначе origin/main.
+UPSTREAM="${HYPRDESK_UPSTREAM:-}"
+if [[ -z "$UPSTREAM" ]]; then
+    if git remote get-url upstream >/dev/null 2>&1; then
+        UPSTREAM="upstream/main"
+    else
+        UPSTREAM="origin/main"
+    fi
+fi
 REMOTE="${UPSTREAM%%/*}"
 BRANCH="${UPSTREAM#*/}"
 
@@ -35,6 +44,16 @@ git config rerere.enabled true
 
 echo "→ git fetch $REMOTE"
 git fetch --prune "$REMOTE"
+
+if ! git merge-base "$UPSTREAM" HEAD >/dev/null 2>&1; then
+    cat >&2 <<EOF
+У $UPSTREAM нет общей истории с текущей веткой — это не upstream hyprdesk.
+Добавьте его и повторите:
+    git remote add upstream https://github.com/jacquesh82/hyprdesk
+    HYPRDESK_UPSTREAM=upstream/main $0 "$REPO"
+EOF
+    exit 1
+fi
 
 echo "→ git rebase $UPSTREAM"
 if ! git rebase "$UPSTREAM"; then

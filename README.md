@@ -32,8 +32,12 @@ git checkout ru
 
 ```bash
 git remote add upstream https://github.com/jacquesh82/hyprdesk
-HYPRDESK_UPSTREAM=upstream/main ./hyprdesk-ru-update.sh
+./hyprdesk-ru-update.sh
 ```
+
+Скрипт сам выбирает `upstream/main`, если remote `upstream` добавлен
+(иначе `origin/main`), и отказывается перебазировать на ветку без общей
+истории — например, на `main` этого репозитория с комплектом.
 
 Ветка `main` — сам комплект (этот README, патч, релиз с архивом); при обычном
 `git clone` открывается она, поэтому `git checkout ru` обязателен.
@@ -113,9 +117,10 @@ cd hyprdesk
 /path/to/hyprdesk-ru/hyprdesk-ru-update.sh
 ```
 
-Если `origin` — ваш форк, добавьте upstream и укажите его:
-`git remote add upstream https://github.com/jacquesh82/hyprdesk` и
-`HYPRDESK_UPSTREAM=upstream/main ./hyprdesk-ru-update.sh`.
+Если `origin` — ваш форк или приватный репозиторий с комплектом, добавьте
+upstream: `git remote add upstream https://github.com/jacquesh82/hyprdesk` —
+дальше скрипт выберет `upstream/main` сам. Переопределить можно переменной
+`HYPRDESK_UPSTREAM`.
 
 Скрипт делает `git fetch`, `git rebase origin/main`, проверяет каталог
 (`locales/ru.toml` покрывает все ключи, плейсхолдеры совпадают) и запускает
