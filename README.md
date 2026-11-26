@@ -16,6 +16,28 @@
 язык `ru` в i18n, пункт «Русский» в настройках и мастере первой настройки,
 `--lang ru` в установщике, формат дат `ru_RU` и раскладку `ru` в мастере.
 
+## Готовый клон (ветка `ru`)
+
+В этом же репозитории есть ветка `ru`: полная история upstream, коммит
+перевода и `hyprdesk-ru-update.sh`. Самый короткий путь на новой машине:
+
+```bash
+git clone https://github.com/kichcloud/hyprdesk-ru.git hyprdesk
+cd hyprdesk
+git checkout ru
+./scripts/install.sh --from-source --lang ru --keyboard ru
+```
+
+Обновления:
+
+```bash
+git remote add upstream https://github.com/jacquesh82/hyprdesk
+HYPRDESK_UPSTREAM=upstream/main ./hyprdesk-ru-update.sh
+```
+
+Ветка `main` — сам комплект (этот README, патч, релиз с архивом); при обычном
+`git clone` открывается она, поэтому `git checkout ru` обязателен.
+
 ## Требования
 
 - Arch, Debian/Ubuntu, Fedora или openSUSE; x86_64 или aarch64; systemd; `sudo`.
